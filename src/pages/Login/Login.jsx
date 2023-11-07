@@ -6,14 +6,24 @@ import bgimg from "../../assests/storeiamge.avif"
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { loginUser } from '../../api/auth_api';
-
+import { useDispatch } from 'react-redux';
+import { setUserData } from '../../store/store';
 const Login = () => {
     const Navigate = useNavigate()
+    const dispatch = useDispatch();
+  
 
     const {register,handleSubmit,formState: { errors }} = useForm()
     const onSubmit = async (data) => {
       try {
         const response = await loginUser(data);
+        const userData = {
+          token: response.data.token,
+          username: response.data.username,
+          image: response.data.image,
+        };
+  
+        dispatch(setUserData(userData));
       
         toast.success(response.data.message, {
           position: 'top-center',
@@ -23,9 +33,9 @@ const Login = () => {
           pauseOnHover: true,
         });
        
-        // setTimeout(() => {
-        //   Navigate('/');
-        // }, 2000);
+        setTimeout(() => {
+          Navigate('/home');
+        }, 2000);
       } catch (error) {
         toast.error( error.message, {
           position: 'top-center',
