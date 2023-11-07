@@ -3,20 +3,48 @@ import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
 import "../Register/Register.css"
 import bgimg from "../../assests/storeiamge.avif"
-
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { loginUser } from '../../api/auth_api';
 
 const Login = () => {
     const Navigate = useNavigate()
 
     const {register,handleSubmit,formState: { errors }} = useForm()
-    const onSubmit = data => console.log(data);
+    const onSubmit = async (data) => {
+      try {
+        const response = await loginUser(data);
+      
+        toast.success(response.data.message, {
+          position: 'top-center',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+        });
+       
+        // setTimeout(() => {
+        //   Navigate('/');
+        // }, 2000);
+      } catch (error) {
+        toast.error( error.message, {
+          position: 'top-center',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+        });
+       
+        console.error('Error sending data to the backend:', error);
+      }
+    };
     const handleClick =() =>{
       Navigate("/register")
     }
   return (
   <section>
     <div className="register">
+    <ToastContainer />
         
         <div className="col-1">
             <h2>Login In</h2>
